@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chiến Thuật Turn-Based</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4/fonts/remixicon.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/battle.css">
+    <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+    <!-- Start Screen -->
+    <div id="startScreen" class="screen active">
+        <div class="start-container">
+            <h1 class="game-title">CHIẾN THUẬT</h1>
+            <p class="game-subtitle">Hệ thống đấu chiến Turn-Based</p>
+            <button id="startBtn" class="btn btn-primary btn-large">
+                <i class="ri-play-fill"></i> Bắt Đầu
+            </button>
+            <div class="start-footer">
+                <p>Lưu dữ liệu tự động trên trình duyệt của bạn</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Screen -->
+    <div id="mainScreen" class="screen">
+        <!-- Top HUD -->
+        <div class="top-hud">
+            <div class="player-info">
+                <div class="player-avatar">
+                    <i class="ri-user-3-fill"></i>
+                </div>
+                <div class="player-details">
+                    <div class="player-name">Nhà Lữ Hành</div>
+                    <div class="player-level">
+                        <span>LV <span id="playerLevel">1</span></span>
+                        <div class="exp-bar">
+                            <div class="exp-fill" id="expFill" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="resources">
+                <div class="resource-item" title="Ánh Sao - Vật phẩm quý nhất">
+                    <i class="ri-star-fill resource-star"></i>
+                    <span id="starLight">0</span>
+                </div>
+                <div class="resource-item" title="Kim Cương">
+                    <i class="ri-diamond-fill resource-diamond"></i>
+                    <span id="diamond">0</span>
+                </div>
+                <div class="resource-item" title="VPNC - Vật phẩm nâng cấp">
+                    <i class="ri-flashlight-fill resource-vpnc"></i>
+                    <span id="vpnc">0</span>
+                </div>
+                <div class="resource-item" title="Vàng">
+                    <i class="ri-coin-fill resource-gold"></i>
+                    <span id="gold">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <h2 class="screen-title">Màn Hình Chính</h2>
+            
+            <div class="menu-grid">
+                <button class="menu-btn" id="btnStage">
+                    <div class="menu-icon"><i class="ri-sword-fill"></i></div>
+                    <div class="menu-text">
+                        <span class="menu-title">Đấu Ải</span>
+                        <span class="menu-desc">Thách đấu các ải nhận thưởng</span>
+                    </div>
+                </button>
+
+                <button class="menu-btn" id="btnCharacter">
+                    <div class="menu-icon"><i class="ri-team-fill"></i></div>
+                    <div class="menu-text">
+                        <span class="menu-title">Nhân Vật</span>
+                        <span class="menu-desc">Quản lý và nâng cấp tướng</span>
+                    </div>
+                </button>
+
+                <button class="menu-btn" id="btnEvent">
+                    <div class="menu-icon"><i class="ri-calendar-event-fill"></i></div>
+                    <div class="menu-text">
+                        <span class="menu-title">Sự Kiện</span>
+                        <span class="menu-desc">Các hoạt động đặc biệt</span>
+                    </div>
+                </button>
+
+                <button class="menu-btn" id="btnGiftcode">
+                    <div class="menu-icon"><i class="ri-gift-2-fill"></i></div>
+                    <div class="menu-text">
+                        <span class="menu-title">Giftcode</span>
+                        <span class="menu-desc">Nhập mã nhận quà</span>
+                    </div>
+                </button>
+
+                <button class="menu-btn" id="btnShop">
+                    <div class="menu-icon"><i class="ri-store-2-fill"></i></div>
+                    <div class="menu-text">
+                        <span class="menu-title">Cửa Hàng</span>
+                        <span class="menu-desc">Mua nhân vật & vật phẩm</span>
+                    </div>
+                </button>
+
+                <button class="menu-btn" id="btnReset">
+                    <div class="menu-icon"><i class="ri-refresh-line"></i></div>
+                    <div class="menu-text">
+                        <span class="menu-title">Đặt Lại</span>
+                        <span class="menu-desc">Xóa toàn bộ dữ liệu</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage Select Screen -->
+    <div id="stageScreen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btnBackFromStage"><i class="ri-arrow-left-line"></i> Quay lại</button>
+            <h2 class="screen-title">Chọn Chương</h2>
+        </div>
+        <div class="chapters-container" id="chaptersContainer"></div>
+    </div>
+
+    <!-- Stage Levels Screen -->
+    <div id="stageLevelsScreen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btnBackFromLevels"><i class="ri-arrow-left-line"></i> Quay lại</button>
+            <h2 class="screen-title" id="chapterTitle">Chương 1</h2>
+        </div>
+        <div class="levels-container" id="levelsContainer"></div>
+    </div>
+
+    <!-- Team Select Screen -->
+    <div id="teamScreen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btnBackFromTeam"><i class="ri-arrow-left-line"></i> Quay lại</button>
+            <h2 class="screen-title">Chọn Đội Hình (3 nhân vật)</h2>
+        </div>
+        <div class="team-select-container">
+            <div class="selected-team" id="selectedTeam">
+                <h3>Đội Hình Hiện Tại</h3>
+                <div class="team-slots" id="teamSlots"></div>
+            </div>
+            <div class="character-list" id="characterListTeam">
+                <h3>Danh Sách Nhân Vật</h3>
+                <div class="char-grid" id="charGridTeam"></div>
+            </div>
+            <button class="btn btn-primary btn-large btn-start-battle" id="btnStartBattle">
+                <i class="ri-sword-fill"></i> Bắt Đầu Trận Đấu
+            </button>
+        </div>
+    </div>
+
+    <!-- Character Management Screen -->
+    <div id="characterScreen" class="screen">
+        <div class="screen-header">
+            <button class="btn-back" id="btnBackFromChar"><i class="ri-arrow-left-line"></i> Quay lại</button>
+            <h2 class="screen-title">Quản Lý Nhân Vật</h2>
+        </div>
+        <div class="character-management">
+            <div class="char-list-panel" id="charListPanel">
+                <h3>Danh Sách Tướng</h3>
+                <div class="char-list" id="charList"></div>
+            </div>
+            <div class="char-detail-panel" id="charDetailPanel">
+                <h3>Chi Tiết Nhân Vật</h3>
+                <div id="charDetailContent" class="char-detail-content">
+                    <p class="text-muted">Chọn một nhân vật để xem chi tiết</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Battle Screen -->
+    <div id="battleScreen" class="screen">
+        <div class="battle-container">
+            <!-- Battle Log -->
+            <div class="battle-log" id="battleLog">
+                <div class="log-header">
+                    <i class="ri-file-list-3-line"></i> Nhật Ký Trận Đấu
+                </div>
+                <div class="log-content" id="logContent"></div>
+            </div>
+
+            <!-- Battle Field -->
+            <div class="battle-field">
+                <div class="battle-info-top">
+                    <span id="battleStageInfo">Ải 1</span>
+                    <span id="battleTurnInfo">Hiệp 1</span>
+                </div>
+
+                <!-- Enemy Side -->
+                <div class="battle-side enemy-side">
+                    <div class="units-container" id="enemyUnits"></div>
+                </div>
+
+                <!-- VS Divider -->
+                <div class="battle-divider">
+                    <span>VS</span>
+                </div>
+
+                <!-- Player Side -->
+                <div class="battle-side player-side">
+                    <div class="units-container" id="playerUnits"></div>
+                </div>
+
+                <!-- Current Turn Indicator -->
+                <div class="current-turn-indicator" id="currentTurnIndicator">
+                    <span id="currentTurnName">Đang xử lý...</span>
+                </div>
+            </div>
+
+            <!-- Skill Panel -->
+            <div class="skill-panel" id="skillPanel">
+                <div class="skill-panel-header">
+                    <span id="activeCharName">Chọn nhân vật</span>
+                    <span class="en-info" id="activeCharEN">EN: 0/0</span>
+                </div>
+                <div class="skill-buttons" id="skillButtons">
+                    <p class="text-muted">Đang chờ lượt...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Battle Result Popup -->
+    <div id="battleResultPopup" class="popup-overlay">
+        <div class="popup battle-result-popup">
+            <h2 id="resultTitle">Chiến Thắng!</h2>
+            <div class="result-content" id="resultContent"></div>
+            <button class="btn btn-primary btn-large" id="btnResultClose">
+                <i class="ri-check-line"></i> Xác Nhận
+            </button>
+        </div>
+    </div>
+
+    <!-- Event Popup -->
+    <div id="eventPopup" class="popup-overlay">
+        <div class="popup">
+            <h2><i class="ri-calendar-event-fill"></i> Sự Kiện</h2>
+            <p class="popup-message">Chưa có sự kiện</p>
+            <button class="btn btn-secondary popup-close-btn" data-popup="eventPopup">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Giftcode Popup -->
+    <div id="giftcodePopup" class="popup-overlay">
+        <div class="popup">
+            <h2><i class="ri-gift-2-fill"></i> Nhập Giftcode</h2>
+            <input type="text" id="giftcodeInput" class="form-input" placeholder="Nhập mã giftcode..." maxlength="20">
+            <button class="btn btn-primary" id="btnRedeemGiftcode">Đổi Quà</button>
+            <p class="popup-message" id="giftcodeMessage"></p>
+            <button class="btn btn-secondary popup-close-btn" data-popup="giftcodePopup">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Shop Popup -->
+    <div id="shopPopup" class="popup-overlay">
+        <div class="popup">
+            <h2><i class="ri-store-2-fill"></i> Cửa Hàng</h2>
+            <p class="popup-message">Chưa hoạt động</p>
+            <button class="btn btn-secondary popup-close-btn" data-popup="shopPopup">Đóng</button>
+        </div>
+    </div>
+
+    <!-- Confirm Reset Popup -->
+    <div id="resetPopup" class="popup-overlay">
+        <div class="popup">
+            <h2><i class="ri-error-warning-fill"></i> Xác Nhận</h2>
+            <p class="popup-message">Bạn có chắc muốn đặt lại toàn bộ dữ liệu? Hành động này không thể hoàn tác.</p>
+            <div class="popup-buttons">
+                <button class="btn btn-secondary popup-close-btn" data-popup="resetPopup">Hủy</button>
+                <button class="btn btn-danger" id="btnConfirmReset">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- General Message Popup -->
+    <div id="messagePopup" class="popup-overlay">
+        <div class="popup">
+            <h2 id="messagePopupTitle">Thông Báo</h2>
+            <p class="popup-message" id="messagePopupText"></p>
+            <button class="btn btn-secondary popup-close-btn" data-popup="messagePopup">Đóng</button>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/character.js"></script>
+    <script src="js/stage.js"></script>
+    <script src="js/battle.js"></script>
+    <script src="js/ui.js"></script>
+</body>
+</html>
